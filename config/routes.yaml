@@ -1,3 +1,11 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+hello: # Nom de la route
+    path: /hello #url définit qui permettra de charger le controller ci-dessous
+    controller: App\Controller\TestController::hello # controller et méthode chargés avec l'url /hello
+
+# bye:
+#     path: /bye
+#     controller: App\Controller\TestController::bye

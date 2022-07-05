@@ -1,0 +1,33 @@
+{# 
+    Un fichier twig générant un template doit obligatoirement
+    étendre de "base.html.twig"
+ #}
+{% extends "base.html.twig" %}
+
+{# 
+    Le code html doit obligatoirement être contenu dans un block.
+ #}
+
+ {# 
+    {% %} => est un élément twig permettant d'utiliser une fonction ou un élément de twig
+    {{ }} => est un équivalent au "echo" de PHP et permet d'afficher l'information contenue dans une variable sur la page
+  #}
+{% block body %}
+    <h1>Coucou</h1>
+    {# Condition en Twig => if->endif #}
+    {% if categoriesList %}
+        <ul>
+        {# Boucle for en twig #}
+        {# categoriesList est la clé passées dans le controller qui contient toutes les catégories #}
+            {% for categorie in categoriesList %}
+            {# 
+                Pour afficher le nom de chaque catégorie, on parcourt notre liste de catégorie
+                et comme pour le javascript, on indique la valeur à afficher de l'objet avec un "."
+            #}
+                <li>{{ categorie.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+          <h4>Il n'y a aucune catégorie de répertoriée pour le moment.</h4>  
+    {% endif %}
+{% endblock %}
