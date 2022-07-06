@@ -5,9 +5,23 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Generator;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
+    /**
+     * Generateur de fausses données via Faker
+     *
+     * @var Generator
+     */
+    private Generator $faker;
+
+    public function __construct()
+    {
+        $this->faker = Factory::create('fr_FR');
+    }
+
     /**
      * Les fixtures vont nous permettre de faire des tests fonctionnels.
      * Un test fonctionnel est un test qui test les pages avec leur affichage 
@@ -26,13 +40,24 @@ class AppFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
+        $this->createCategories($manager);
+
+        $manager->flush();
+    }
+
+    /**
+     * Crée des données pour la table category et les persist
+     *
+     * @param ObjectManager $manager
+     * @return void
+     */
+    private function createCategories (ObjectManager $manager)
+    {
         for ($i=1; $i < 11; $i++) { 
             $category = new Category;
-            $category->setName("Categorie n°".$i);
+            $category->setName($this->faker->sentence(4, true));
 
             $manager->persist($category);
         }
-
-        $manager->flush();
     }
 }
