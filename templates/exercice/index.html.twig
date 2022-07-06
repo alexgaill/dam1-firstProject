@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des langages du web</h1>
+
+    {% if langages %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for langage in langages %}
+                    <tr>
+                        <td>{{ langage.name }}</td>
+                        <td>{{ langage.description }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h2>Aucun langage n'a été ajouté à la liste.</h2>
+    {% endif %}
+{% endblock %}

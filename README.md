@@ -2,7 +2,7 @@
 
 Ce projet est réalisé avec la promotion **altrh dam1** de l'année 2022.
 
-Vous pouvez retrouver le projet sur <https://github.com/alexgaill/dam1-symfony>.
+Vous pouvez retrouver le projet sur <https://github.com/alexgaill/dam1-firstProject>.
 
 ## Liens utiles
 > [Installer composer](https://getcomposer.org/download/)
@@ -16,6 +16,8 @@ Vous pouvez retrouver le projet sur <https://github.com/alexgaill/dam1-symfony>.
 > [Documentation doctrine](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/query-builder.html#the-querybuilder)
 >
 > [FakerPhp](https://packagist.org/packages/fakerphp/faker)
+>
+> [Vidéos cours](https://drive.google.com/drive/folders/1Nrhkinh4fEwWXwE0YyWbgFGa9b-Mm4sU?usp=sharing)
 
 ## Documents de cours
 > [Déroulé](documentsCours/deroule.pdf)
@@ -36,9 +38,9 @@ composer install #installe les dépendances nécessaires au bon fonctionnement d
 # DATABASE_URL="mysql://root:@127.0.0.1:3306/superblog" # xampp ou wamp
 # DATABASE_URL="mysql://root:root@127.0.0.1:8889/superblog" # mamp
 
-symfony console doctrine:database:create
-symfony console doctrine:migration:migrate
-symfony server:start
+symfony console doctrine:database:create # Crée la base de donnée
+symfony console doctrine:migrations:migrate # Execute les requêtes sql des fichiers de migration
+symfony server:start # Lance le serveur symfony (sur 127.0.0.1:8000 par défaut)
  ``` 
 
 ## Une question sur le projet? 
