@@ -4,7 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,6 +32,59 @@ class CategoryController extends AbstractController
 
         return $this->render('category/index.html.twig', [
             'categories' => $categories
+        ]);
+    }
+
+    // L'attribut methods indique les méthodes autorisées pour accéder à cette page: GET, POST, PUT, PATCH, DELETE
+    // Les requirements donnent des indications sur les paramètres attendus dans l'url. Ici l'id ne doit comporter que des chiffres
+    #[Route('/category/{id}', name:'single_category', methods:["GET"], requirements:['id'=> '\d+'])]
+    /**
+     * Depuis Symfony 6, on utilise le ManagerRegistry à la place de l'EntityManagerInterface pour se connecter au Repository
+     *
+     * @param integer $id
+     * @param ManagerRegistry $manager
+     * @return Response
+     */
+    public function single(int $id, ManagerRegistry $manager): Response
+    {
+        // La méthode find du repository est une méthode permettant de retourner un élément d'une table en fonction de son id.
+        $category = $manager->getRepository(Category::class)->find($id);
+        return $this->render('category/single.html.twig', [
+            'category' => $category
+        ]);
+    }
+
+    #[Route("/category/add", name:"add_category", methods:["GET", "POST"])]
+    public function add (Request $request, ManagerRegistry $manager) :Response
+    {
+        // On créé un objet catégorie vide à passer au formulaire pour le remplir
+        $category = new Category;
+
+        // CreateFormBuilder permet de créer un formulaire
+        $form = $this->createFormBuilder($category)
+                // Pour chaque champ de l'objet, on va ajouter un input
+                // Cette input contient le nom du champ de la table et le type d'input
+                // Ici on créé un input de type text pour récupérer le name de la catégorie
+                ->add('name', TextType::class, [
+                    'label' => "Nom de la catégorie"
+                ])
+                ->add('submit', SubmitType::class, [
+                    'label' => 'Enregistrer'
+                ])
+                // Get form permet de stocker le foormulaire préconçu dans la variable $form
+                ->getForm();
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->getRepository(Category::class)->add($category, true);
+            return $this->redirectToRoute('app_category');
+        }
+        
+        // Lorsque l'on doit afficher un formulaire sur une page, on doit utiliser la méthode renderForm
+        // et non render pour générer le template.
+        return $this->renderForm('category/add.html.twig', [
+            'form' => $form
         ]);
     }
 }

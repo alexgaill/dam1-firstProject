@@ -3,20 +3,46 @@
 {% block body %}
 	<h1>Liste des catégories présentes sur le site</h1>
 
-	<table>
+	<table class="table table-stripped table-hover">
 		<thead>
 			<tr>
 				<th>#</th>
 				<th>Nom de la catégorie</th>
+				<th>Options</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for category in categories %}
-                <tr>
-                    <th>{{ category.id }}</th>
-                    <td>{{ category.name }}</td>
-                </tr>
-            {% endfor %}
+				<tr>
+					<th>{{ category.id }}</th>
+					<td>{{ category.name }}</td>
+					<td>
+						{# On indique à la route qu'on a besoin d'un paramètre appelé id et ce paramètre a pour valeur category.id #}
+						<a href="{{ path('single_category', {id: category.id}) }}">
+							<button class="btn btn-info">Voir plus</button>
+						</a>
+						<a href="#">
+							<button class="btn btn-warning">Modifier</button>
+						</a>
+						<a href="#">
+							<button class="btn btn-danger" onclick="alert('Etes-vous sûr de vouloir supprimer?')">Supprimer</button>
+						</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="3" class="text-center text-danger">Il n'y a pas de catégorie pour le moment</td>
+				</tr>
+			{% endfor %}
 		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3" class="text-center">
+					<a href="{{ path('add_category') }}">
+						<button class="btn btn-info">Ajouter une catégorie</button>
+					</a>
+				</td>
+			</tr>
+		</tfoot>
 	</table>
 {% endblock %}
