@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,5 +66,27 @@ class PostController extends AbstractController
         return $this->renderForm('post/add.html.twig', [
             'formPost' => $form
         ]);
+    }
+
+    #[Route('/post/{id}/update', name:'update_post', methods:["GET", "POST"], requirements:['id'=>"\d+"])]
+    public function update(Post $post, Request $request, ManagerRegistry $manager) :Response
+    {
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->getRepository(Post::class)->add($post, true);
+            return $this->redirectToRoute('single_post', ['id' => $post->getId()]);
+        }
+
+        return $this->renderForm('post/update.html.twig', [
+            'form' => $form
+        ]);
+    }
+
+    #[Route('/post/{id}/delete', name:"delete_post", methods:["GET"], requirements:['id' => "\d+"])]
+    public function delete(Post $post, ManagerRegistry $manager) :Response
+    {
+        $manager->getRepository(Post::class)->remove($post, true);
+        return $this->redirectToRoute('app_post');
     }
 }

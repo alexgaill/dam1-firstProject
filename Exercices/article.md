@@ -16,3 +16,11 @@ Bonus2. N'afficher que les 100 premiers caractères de la description
 
 5. Créer la méthode single des articles
 6. Créer la méthode add des articles
+
+
+----------------------------------------------------------
+
+## Partie 3
+
+7. Créer la méthode update des articles
+8. Créer la méthode delete des articles
