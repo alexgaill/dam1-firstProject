@@ -1,0 +1,7 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1 class="text-center">{{post.title}}</h1>
+    <p>{{ post.description }}</p>
+    <small class="text-secondary">Article rédigé le {{post.createdAt|format_date('long', locale='fr')}}</small>
+{% endblock %}

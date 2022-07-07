@@ -8,3 +8,11 @@
 
 Bonus1. Ajouter une colonne pour la date de création
 Bonus2. N'afficher que les 100 premiers caractères de la description
+
+
+----------------------------------------------------------
+
+## Partie 2
+
+5. Créer la méthode single des articles
+6. Créer la méthode add des articles
