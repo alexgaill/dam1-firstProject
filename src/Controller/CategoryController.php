@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Form\CategoryType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -86,5 +87,35 @@ class CategoryController extends AbstractController
         return $this->renderForm('category/add.html.twig', [
             'form' => $form
         ]);
+    }
+
+    #[Route("/category/{id}/update", name:"update_category", methods:["GET", "POST"], requirements:['id' => '\d+'])]
+    public function update(Category $category, Request $request, ManagerRegistry $manager) :Response
+    {
+        // Avec la méthode createForm, on charge le formulaire qui a été sur une class dédiée (CategoryType)
+        $form = $this->createForm(CategoryType::class, $category);
+        // On associe la request on formulaire
+        $form->handleRequest($request);
+        // On s'assure que le formulaire a bien été soumis et que les données reçues sont valides
+        if ($form->isSubmitted() && $form->isValid()) {
+            // On utilise la méthode add qui si elle détecte un id dans l'objet va exécuter une requête update
+            $manager->getRepository(Category::class)->add($category, true);
+            return $this->redirectToRoute('single_category', ['id' => $category->getId()]);
+        }
+
+        return $this->renderForm('category/update.html.twig', [
+            'form' => $form,
+            'category' => $category
+        ]);
+    }
+
+    #[Route("/categorier/{id}/delete", name:'delete_category', methods:["GET"], requirements:['id'=> '\d+'])]
+    public function delete(Category $category, ManagerRegistry $manager) :Response
+    {
+        // Grâce au manager, on va charger le repository et la méthode remove.
+        // Cette méthode remove va mettre en queue la suppression de la catégorie
+        $manager->getRepository(Category::class)->remove($category, true);
+        // On redirige l'utilisateur vers la page affichant toutes les catégories
+        return $this->redirectToRoute('app_category');
     }
 }
