@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Post;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
@@ -41,6 +42,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $this->createCategories($manager);
+        $this->createPosts($manager);
 
         $manager->flush();
     }
@@ -58,6 +60,24 @@ class AppFixtures extends Fixture
             $category->setName($this->faker->sentence(4, true));
 
             $manager->persist($category);
+        }
+    }
+
+    /**
+     * Crée des données pour la table post et les persist
+     *
+     * @param ObjectManager $manager
+     * @return void
+     */
+    public function createPosts (ObjectManager $manager)
+    {
+        for ($i=0; $i < 100; $i++) { 
+            $post = new Post;
+            $post->setTitle($this->faker->sentence(6, true))
+                ->setDescription($this->faker->paragraphs(5, true))
+                ->setCreatedAt($this->faker->dateTime());
+            
+            $manager->persist($post);
         }
     }
 }
