@@ -42,7 +42,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $this->createCategories($manager);
-        $this->createPosts($manager);
+        // $this->createPosts($manager);
 
         $manager->flush();
     }
@@ -60,6 +60,9 @@ class AppFixtures extends Fixture
             $category->setName($this->faker->sentence(4, true));
 
             $manager->persist($category);
+
+            $this->createPosts($manager, $category);
+
         }
     }
 
@@ -69,13 +72,15 @@ class AppFixtures extends Fixture
      * @param ObjectManager $manager
      * @return void
      */
-    public function createPosts (ObjectManager $manager)
+    public function createPosts (ObjectManager $manager, Category $category)
     {
-        for ($i=0; $i < 100; $i++) { 
+        for ($i=0; $i < 10; $i++) { 
             $post = new Post;
             $post->setTitle($this->faker->sentence(6, true))
                 ->setDescription($this->faker->paragraphs(5, true))
-                ->setCreatedAt($this->faker->dateTime());
+                ->setCreatedAt($this->faker->dateTime())
+                ->setCategory($category)
+                ;
             
             $manager->persist($post);
         }

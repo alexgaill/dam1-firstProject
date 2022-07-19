@@ -8,6 +8,7 @@
             <tr>
                 <th>#</th>
                 <th>Titre</th>
+                <th>Category</th>
                 <th>Contenu</th>
                 <th>Date de mise en ligne</th>
                 <th>Actions</th>
@@ -18,6 +19,7 @@
                 <tr>
                     <th>{{ post.id }}</th>
                     <td>{{ post.title }}</td>
+                    <td>{{ post.category.name }}</td>
                     {# <td>{{ post.description [0:100] ~'...' }}</td> #}
                     <td>{{ post.subDescription ~ ' ...'}}</td>
                     <td>{{ post.createdAt|format_date('long', locale='fr') }}</td>

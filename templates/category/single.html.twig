@@ -2,4 +2,21 @@
 
 {% block body %}
     <h1 class="text-center">{{ category.name }}</h1>
+    
+    <table class="table-striped table-hover table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Titre</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in category.posts %}
+                <tr>
+                    <td>{{ post.id }}</td>
+                    <td><a href="{{ path('single_post', {id: post.id}) }}">{{ post.title }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -2,13 +2,16 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Post;
+
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PostType extends AbstractType
 {
@@ -20,6 +23,14 @@ class PostType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => "Contenu"
+            ])
+            // L'EntityType permet de générer un champ <select>.
+            // Comme son nom l'indique, l'EntityType fait référence à une entité 
+            // on doit donc lui associer l'entité grâce à l'option class.
+            // On doit également définir qu'elle information s'affiche pour chaque <option> grâce à l'option choice_label
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'name'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => "modifier"
