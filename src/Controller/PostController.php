@@ -41,28 +41,47 @@ class PostController extends AbstractController
         // On créé un nouvel article
         $post = new Post;
         // On génère le formulaire
-        $form = $this->createFormBuilder($post)
-                ->add('title', TextType::class, [
-                    'label' => "Titre de l'article"
-                ])
-                ->add('description', TextareaType::class, [
-                    'label' => "Contenu"
-                ])
-                ->add('category', EntityType::class, [
-                    'class' => Category::class,
-                    'choice_label' => 'name'
-                ])
-                ->add('submit', SubmitType::class, [
-                    'label' => "Envoyer"
-                ])
-                ->getForm();
+        // $form = $this->createFormBuilder($post)
+        //         ->add('title', TextType::class, [
+        //             'label' => "Titre de l'article"
+        //         ])
+        //         ->add('description', TextareaType::class, [
+        //             'label' => "Contenu"
+        //         ])
+        //         ->add('category', EntityType::class, [
+        //             'class' => Category::class,
+        //             'choice_label' => 'name'
+        //         ])
+        //         ->add('submit', SubmitType::class, [
+        //             'label' => "Envoyer"
+        //         ])
+        //         ->getForm();
+
+        $form = $this->createForm(PostType::class, $post);
         
                 // On associe les informations contenues dans la Request au formulaire
         $form->handleRequest($request);
         // On vérifie que le formulaire a été soumis et que les données reçues correspondent à ce qui est attendu
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            // On récupère les informations de l'image venant du formulaire
+            $picture = $form->get('picture')->getData();
+            // On génère un nom unique pour l'image et éviter les doublons qui causeraient des erreurs
+            $pictureName = md5(uniqid()).'.'. $picture->guessExtension();
+            // On tente de déplacer l'image dans un dossier définit par le paramètre upload_picture
+            // Ce paramètre est dans le fichier config/services.yaml
+            try {
+                $picture->move(
+                    $this->getParameter('upload_picture'),
+                    $pictureName
+                );
+            } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException $e) {
+                return new Response($e->getMessage(), 404);
+            }
+
             // On attribue la valeur du moment présent à createdAt
             $post->setCreatedAt(new \DateTime());
+            $post->setPicture($pictureName);
             // On enregistre l'article en BDD
             $manager->getRepository(Post::class)->add($post, true);
             // On redirige l'utilisateur vers la page single pour voir les informations de l'article créé
