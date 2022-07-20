@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 
 class PostController extends AbstractController
 {
@@ -96,9 +97,35 @@ class PostController extends AbstractController
     #[Route('/post/{id}/update', name:'update_post', methods:["GET", "POST"], requirements:['id'=>"\d+"])]
     public function update(Post $post, Request $request, ManagerRegistry $manager) :Response
     {
+        // On stocke l'ancienne image et on la transforme en fichier
+        if ($post->getPicture()) {
+            $oldPicture = new File($this->getParameter('upload_picture').'/'.$post->getPicture());
+            $oldPictureName = $post->getPicture();
+            $post->setPicture($oldPicture);
+        } else {
+            $oldPictureName = null;
+        }
+        
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
+            // On vérifie si une nouvelle image a été passée
+            $picture = $form->get('picture')->getData();
+            if ($picture) {
+                $pictureName = md5(uniqid()).'.'. $picture->guessExtension();
+                $picture->move(
+                    $this->getParameter('upload_picture'),
+                    $pictureName
+                );
+                $post->setPicture($pictureName);
+                // Supprime l'ancienne image
+                if (file_exists($this->getParameter('upload_picture').'/'.$oldPictureName)  && $oldPictureName !== null) {
+                    unlink($this->getParameter('upload_picture').'/'.$oldPictureName);
+                }
+            } else {
+                $post->setPicture($oldPictureName);
+            }
             $manager->getRepository(Post::class)->add($post, true);
             return $this->redirectToRoute('single_post', ['id' => $post->getId()]);
         }

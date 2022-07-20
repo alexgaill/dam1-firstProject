@@ -2,6 +2,9 @@
 
 {% block body %}
     <h1 class="text-center">{{post.title}}</h1>
+    {% if post.picture %}
+        <img src="{{ asset('assets/img/upload/' ~ post.picture) }}" alt="{{ post.title }}">
+    {% endif %}
     <p>{{ post.description }}</p>
     <small class="text-secondary">Article rédigé le {{post.createdAt|format_date('long', locale='fr')}}</small>
 {% endblock %}
