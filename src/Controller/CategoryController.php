@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -55,9 +56,18 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route("/category/add", name:"add_category", methods:["GET", "POST"])]
+    #[
+        Route("/category/add", name:"add_category", methods:["GET", "POST"]),
+        IsGranted("ROLE_ADMIN" , message:"Seul un admin peut accéder à cette page")
+    ]
     public function add (Request $request, ManagerRegistry $manager) :Response
     {
+        $this->denyAccessUnlessGranted("ROLE_ADMIN", "", "Il faut être admin");
+
+        if (!$this->isGranted("ROLE_ADMIN")) {
+            return $this->redirectToRoute('app_category');
+        }
+
         // On créé un objet catégorie vide à passer au formulaire pour le remplir
         $category = new Category;
 
@@ -119,7 +129,7 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route("/categorier/{id}/delete", name:'delete_category', methods:["GET"], requirements:['id'=> '\d+'])]
+    #[Route("/categorie/{id}/delete", name:'delete_category', methods:["GET"], requirements:['id'=> '\d+'])]
     public function delete(Category $category, ManagerRegistry $manager) :Response
     {
         // Grâce au manager, on va charger le repository et la méthode remove.

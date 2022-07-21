@@ -35,6 +35,7 @@
 				</tr>
 			{% endfor %}
 		</tbody>
+		{% if is_granted("ROLE_ADMIN") %}
 		<tfoot>
 			<tr>
 				<td colspan="3" class="text-center">
@@ -44,5 +45,6 @@
 				</td>
 			</tr>
 		</tfoot>
+		{% endif %}
 	</table>
 {% endblock %}
