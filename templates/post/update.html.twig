@@ -1,4 +1,6 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    {{form(form)}}
+    {# {{form(form)}} #}
+    <h1 class="my-3">Modifier une catégorie</h1>
+    {% include "post/_form.html.twig" with {formPost:form} %}
 {% endblock %}

@@ -1,0 +1,22 @@
+{# {{ form(formPost) }} #}
+{% set titleLabel = "Super titre" %}
+
+{{ form_start(formPost) }}
+    <div class="row">
+        <div class="col-3">
+            {{ form_row(formPost.title, {label: titleLabel}) }}
+            <div class="mb-3 d-flex">
+                Catégorie:
+                {{ form_widget(formPost.category) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(formPost.category) }}
+                </div>
+            </div>
+            {{ form_row(formPost.picture) }}
+        </div>
+        <div class="col-9">
+            {{ form_row(formPost.description, {attr: {'rows': '15'}}) }}
+        </div>
+    </div>
+    {{ form_row(formPost.submit, {label: buttonLabel|default('Modifier')}) }}
+{{ form_end(formPost) }}

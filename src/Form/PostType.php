@@ -13,6 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\File;
 
 class PostType extends AbstractType
 {
@@ -20,7 +21,20 @@ class PostType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Titre'
+                // Modifie la valeur du label de l'input
+                'label' => "Titre",
+                // Gère les attributs de l'input
+                'attr' => [
+                    'placeholder' => "Titre"
+                ],
+                // Gère les attributs de la div contenant l'input, le label, l'help, et le message d'erreur
+                'row_attr' => [
+                    'class' => 'mb-3 form-floating'
+                ],
+                'help' => "Indiquez le titre de l'article",
+                'help_attr' => [
+                    'class' => 'bg-info text-white'
+                ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => "Contenu"
@@ -36,7 +50,13 @@ class PostType extends AbstractType
             ->add('picture', FileType::class, [
                 'label' => "Image d'en-tête d'article",
                 'mapped' => false,
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new File(
+                        mimeTypes:["image/jpeg", "image/png"],
+                        mimeTypesMessage: "Le format attendu est jpg, jpeg ou png"
+                    )
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => "modifier"

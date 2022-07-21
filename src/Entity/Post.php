@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
@@ -15,10 +17,32 @@ class Post
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 120)]
+    #[
+        ORM\Column(type: 'string', length: 120),
+        Assert\NotBlank(
+            allowNull:false,
+            message: "Ce champ doit être complété"
+        ),
+        Assert\Length(
+            min:5,
+            minMessage: "La catégorie doit avoir au minimum {{ limit }} caractères.",
+            max:120,
+            maxMessage: "La catégorie doit avoir au maximum {{ limit }} caractères."
+        )
+    ]
     private $title;
 
-    #[ORM\Column(type: 'text')]
+    #[
+        ORM\Column(type: 'text'),
+        Assert\NotBlank(
+            allowNull:false,
+            message: "Ce champ doit être complété"
+        ),
+        Assert\Length(
+            min:100,
+            minMessage: "La catégorie doit avoir au minimum {{ limit }} caractères.",
+        )
+    ]
     private $description;
 
     /**
@@ -35,7 +59,13 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\Column(type: 'string', length: 40, nullable: true)]
+    #[
+        ORM\Column(type: 'string', length: 40, nullable: true),
+        Assert\File(
+            mimeTypes:["image/jpeg", "image/png"],
+            mimeTypesMessage: "Le format attendu est jpg, jpeg ou png"
+        )
+    ]
     private $picture;
 
     public function getId(): ?int

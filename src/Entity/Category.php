@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CategoryRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(CategoryRepository::class)]
 class Category {
@@ -14,7 +15,19 @@ class Category {
     #[ORM\Column(type:"integer")]
     private int $id;
 
-    #[ORM\Column(type:"string", length:65)]
+    #[
+        ORM\Column(type:"string", length:65),
+        Assert\NotBlank(
+            allowNull:false,
+            message: "Ce champ doit être complété"
+        ),
+        Assert\Length(
+            min:5,
+            minMessage: "La catégorie doit avoir au minimum {{ limit }} caractères.",
+            max:65,
+            maxMessage: "La catégorie doit avoir au maximum {{ limit }} caractères."
+        )
+    ]
     private string $name;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Post::class, orphanRemoval: true)]

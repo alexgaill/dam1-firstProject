@@ -78,7 +78,17 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $manager->getRepository(Category::class)->add($category, true);
+            
+            try {
+                $manager->getRepository(Category::class)->add($category, true);
+                
+                // Message flash qui s'affichera sur la page de redirection pour confirmer l'opération
+                $this->addFlash('success', "La catégorie ".$category->getName()." a bien été ajoutée");
+            } catch (\Throwable $th) {
+                // Message flash qui s'affichera sur la page de redirection pour indiquer une erreur lors de l'enregistrement
+                $this->addFlash('danger', "La catégorie ".$category->getName()." n'a pas pu être enregsitrée");
+            }
+
             return $this->redirectToRoute('app_category');
         }
         
@@ -115,6 +125,8 @@ class CategoryController extends AbstractController
         // Grâce au manager, on va charger le repository et la méthode remove.
         // Cette méthode remove va mettre en queue la suppression de la catégorie
         $manager->getRepository(Category::class)->remove($category, true);
+
+        $this->addFlash("warning", "La catégorie '".$category->getName(). "' a bien été supprimée.");
         // On redirige l'utilisateur vers la page affichant toutes les catégories
         return $this->redirectToRoute('app_category');
     }

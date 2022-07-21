@@ -3,5 +3,5 @@
 {% block body %}
     <h1 class="text-center">Ajouter un nouvel article</h1>
 
-    {{ form(formPost) }}
+    {% include "post/_form.html.twig" with {'buttonLabel': "Ajouter"} %}
 {% endblock %}
